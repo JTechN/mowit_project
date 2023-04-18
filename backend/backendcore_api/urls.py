@@ -16,6 +16,7 @@ urlpatterns = [
     path('login/', views.login_request, name='login'),
     path('logout/', views.logout_request, name='logout'),
     path('profile/', views.profile_request, name='profile'),
+
     # path('profile/edit/', views.profile_edit, name='profile_edit'),
 
     # Contractor path
@@ -35,8 +36,3 @@ urlpatterns = [
     # path('customer/login', views.customer_login_request, name='Customer_login'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
-
-
-
