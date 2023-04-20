@@ -96,8 +96,7 @@ def profile_request(request):
         updateform = UserUpdateForm(request.POST, instance=request.user)
         profileform = ProfileUpdateForm(
             request.POST, request.FILES, instance=request.user.profile)
-        rateform = RatingUpdateForm(
-            request.GET, request.rateform,  instance=request.user.profile.rating)
+
         if updateform.is_valid() and profileform.is_valid():
             updateform.save()
             profileform.save()
@@ -111,12 +110,11 @@ def profile_request(request):
     else:
         updateform = UserUpdateForm(instance=request.user)
         profileform = ProfileUpdateForm(instance=request.user.profile)
-        rateform = RatingUpdateForm(
-            request.GET, request.rateform,  instance=request.user.profile)
+
     context = {
         'updateform': updateform,
         'profileform': profileform,
-        'rateform': rateform,
+
     }
 
     return render(request, 'profile.html', context)
