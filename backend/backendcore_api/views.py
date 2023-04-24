@@ -1,10 +1,11 @@
 
 # Rest_Framework
+from django.http import HttpRequest
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
-#from rest_framework.decorators import api_view
+# from rest_framework.decorators import api_view
 
 
 # Django Contrib
@@ -27,100 +28,126 @@ from django.views.generic import DetailView
 # Contractor
 # from Contractor.forms import NewContractorForm
 from Contractor.models import *
+from backendcore_api.models import Post, Rating
+
 
 from .forms import NewUserForm, UserUpdateForm, ProfileUpdateForm, UserInfoUpdateForm
 
 # Create your views here.
 
 # Homepage
+
+
 def homepage(request):
-	return render(request=request, template_name='homepage.html')
+    return render(request=request, template_name='homepage.html')
 
 # Registration Form
+
+
 def register_request(request):
-	if request.method == "POST":
-		form = NewUserForm(request.POST)
-		if form.is_valid():
-			user = form.save()
-			# group = Group.objects.get(name='groupname')
-			group = form.cleaned_data['group']
-			group.user_set.add(user)
-			# user.groups.add(group)
+    if request.method == "POST":
+        form = NewUserForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # group = Group.objects.get(name='groupname')
+            group = form.cleaned_data['group']
+            group.user_set.add(user)
+            # user.groups.add(group)
 
-			login(request, user)
-			return redirect("backendcore_api:homepage")
-	else:
-		form = NewUserForm()
-	return render (request=request, template_name='register.html', context={"register_form":form})
+            login(request, user)
+            return redirect("backendcore_api:homepage")
+    else:
+        form = NewUserForm()
+    return render(request=request, template_name='register.html', context={"register_form": form})
 
-#Login Form
+# Login Form
+
+
 def login_request(request):
-	if request.method == "POST":
-		form = AuthenticationForm(request, data=request.POST)
-		if form.is_valid():
-			username = form.cleaned_data.get('username')
-			password = form.cleaned_data.get('password')
-			user = authenticate(username=username, password=password)
-			if user is not None:
-				login(request, user)
-				# messages.info(request, f"You are now logged in as {username}.")
-				return redirect("backendcore_api:homepage")
-			else:
-				messages.error(request,"Invalid username or password.")
-		else:
-			messages.error(request,"Invalid username or password.")
-	else:
-		form = AuthenticationForm()
-	return render(request=request, template_name="login.html", context={"login_form":form})
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                # messages.info(request, f"You are now logged in as {username}.")
+                return redirect("backendcore_api:homepage")
+            else:
+                messages.error(request, "Invalid username or password.")
+        else:
+            messages.error(request, "Invalid username or password.")
+    else:
+        form = AuthenticationForm()
+    return render(request=request, template_name="login.html", context={"login_form": form})
 
-#Logout Form
+# Logout Form
+
+
 def logout_request(request):
     logout(request)
     messages.info(request, "You have been logged out.")
     return redirect('backendcore_api:login')
 
-#Profile
+# Profile
+
+
 @login_required
 def profile_request(request):
-  if request.method == 'POST':
-    updateform = UserUpdateForm(request.POST, instance=request.user)
-    profileform = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-    infoupdateform = UserInfoUpdateForm(request.POST, instance=request.user.userinfo)
-    if updateform.is_valid() and profileform.is_valid() and infoupdateform.is_valid():
-      updateform.save()
-      profileform.save()
-      infoupdateform.save()
-      # messages.success(request, "Your Account Has Been Updated!")
-      return redirect("backendcore_api:profile")
+    if request.method == 'POST':
+        updateform = UserUpdateForm(request.POST, instance=request.user)
+        profileform = ProfileUpdateForm(
+            request.POST, request.FILES, instance=request.user.profile)
+        infoupdateform = UserInfoUpdateForm(
+            request.POST, instance=request.user.userinfo)
+        if updateform.is_valid() and profileform.is_valid() and infoupdateform.is_valid():
+            updateform.save()
+            profileform.save()
+            infoupdateform.save()
+            # messages.success(request, "Your Account Has Been Updated!")
+            return redirect("backendcore_api:profile")
 
-  else:
-    updateform = UserUpdateForm(instance=request.user)
-    profileform = ProfileUpdateForm(instance=request.user.profile)
-    infoupdateform = UserInfoUpdateForm(instance=request.user)
+    else:
+        updateform = UserUpdateForm(instance=request.user)
+        profileform = ProfileUpdateForm(instance=request.user.profile)
+        infoupdateform = UserInfoUpdateForm(instance=request.user)
 
-  context = {
-		'updateform': updateform,
-  	'profileform': profileform,
-   	'infoupdateform': infoupdateform
-	}
+    context = {
+        'updateform': updateform,
+        'profileform': profileform,
+        'infoupdateform': infoupdateform
+    }
 
-  return render(request, 'profile.html', context)
-	# return render(request=request, template_name='profile.html')
+    return render(request, 'profile.html', context)
+    # return render(request=request, template_name='profile.html')
 
-#Edit Profile
+
+# queryset = ModelName.objects.all() or .get(attribute = 'value') also a .save()
+def index(request: HttpRequest) -> HttpResponse:
+    posts = Post.objects.all()
+    for post in posts:
+        rating = Rating.objects.filter(post=post, user=request.user).first()
+        post.user_rating = rating.rating if rating else 0
+    return render(request, "index.html", {"posts": posts})
+
+
+def rate(request: HttpRequest, post_id: int, rating: int) -> HttpResponse:
+    post = Post.objects.get(id=post_id)
+    Rating.objects.filter(post=post, user=request.user).delete()
+    post.rating_set.create(user=request.user, rating=rating)
+    return index(request)
+# Edit Profile
 # def profile_edit(request, user_id):
 # 	user = get_object_or_404(User, id=user_id)
 # 	return render(request=request, template_name='profile_edit.html', context={"user": user})
 
 
+# =========================================================================================
+# =============Contractor==================================================================
+# =========================================================================================
 
-
-
-#=========================================================================================
-#=============Contractor==================================================================
-#=========================================================================================
-
-#Contractor Homepage
+# Contractor Homepage
 
 # class ContractorProfilePage(DetailView):
 # 	model = Profile
@@ -176,13 +203,9 @@ def profile_request(request):
 # 	return render(request=request, template_name='contractor_profile.html')
 
 
-
-
-
-
-#=========================================================================================
-#=============Customer====================================================================
-#=========================================================================================
+# =========================================================================================
+# =============Customer====================================================================
+# =========================================================================================
 
 # #Customer Homepage
 # def customer_homepage(request):

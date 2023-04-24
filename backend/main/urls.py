@@ -16,16 +16,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken import views
+from django.conf.urls.static import static
+from django.conf import settings
+from backendcore_api import views
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('backendcore_api.urls', namespace='api')),
     path('', include('django.contrib.auth.urls')),
-    
-
-  
-]
+    path('rate/<int:post_id>/<int:rating>/', views.rate),
+    path('', views.index),
 
 
-
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
