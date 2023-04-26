@@ -3,41 +3,54 @@ from django.contrib.auth.models import User
 from django.db import models
 from PIL import Image
 
+
 class Profile(models.Model):
-  user = models.OneToOneField(User, on_delete=models.CASCADE) #When the user is deleted, the profile will also be deleted, this will be the same for any model with on_delete=models.CASCADE.
-  image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    # When the user is deleted, the profile will also be deleted, this will be the same for any model with on_delete=models.CASCADE.
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
 
-  def __str__(self):
-    return self.user.username
+    def __str__(self):
+        return self.user.username
 
-  def save(self, *args, **kwargs):
-      super(Profile, self).save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        super(Profile, self).save(*args, **kwargs)
 
-      profile_imgage = Image.open(self.image.path) # Open profile image
+        profile_imgage = Image.open(self.image.path)  # Open profile image
 
-      # resizing the image
-      if profile_imgage.height > 200 or profile_imgage.width > 200:
-          output_size = (200, 200)
-          profile_imgage.thumbnail(output_size)
-          profile_imgage.save(self.image.path)
-
+        # resizing the image
+        if profile_imgage.height > 200 or profile_imgage.width > 200:
+            output_size = (200, 200)
+            profile_imgage.thumbnail(output_size)
+            profile_imgage.save(self.image.path)
 
 
 class UserInfo(models.Model):
-  user = models.OneToOneField(User, on_delete=models.CASCADE)
-  phone_number = models.CharField(max_length=10)
-  address = models.CharField(max_length=100)
-  zipcode = models.CharField(max_length=5)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone_number = models.CharField(max_length=10)
+    address = models.CharField(max_length=100)
+    zipcode = models.CharField(max_length=5)
 
-  def __str__(self):
-    return self.user.username
+    def __str__(self):
+        return self.user.username
 
-  def save(self, *args, **kwargs):
-      super(UserInfo, self).save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        super(UserInfo, self).save(*args, **kwargs)
 
 # class RatingSystem(models.Model):
 #   user = models.ForeignKey(User, on_delete=models.CASCADE)
 #   ratings = models.IntegerField(default=0)
 
+
 #   def __str__(self):
 #     return self.user.username
+
+
+class Message(models.Model):
+    sender = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='sent_messages')
+    recipient = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='received_messages')
+    subject = models.CharField(max_length=200)
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    read_at = models.DateTimeField(null=True, blank=True)

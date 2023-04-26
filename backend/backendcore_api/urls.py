@@ -20,6 +20,7 @@ urlpatterns = [
 
     # Profile API
     path('ratings/', include('star_ratings.urls', namespace='ratings')),
+    path('messages/', views.message, name='message'),
 
 
     # Contractor path
