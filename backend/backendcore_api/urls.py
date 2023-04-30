@@ -1,11 +1,13 @@
 from django.urls import path, include
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'backendcore_api'
 urlpatterns = [
 
     # If user not logged in
-    path('', views.login_request, name='login'),
+    path('', views.homepage, name='homepage'),
 
     # Registration
     # path('', views.homepage, name='homepage'),
@@ -14,10 +16,14 @@ urlpatterns = [
     path('login/', views.login_request, name='login'),
     path('logout/', views.logout_request, name='logout'),
     path('profile/', views.profile_request, name='profile'),
-    path('profile/edit/', views.profile_edit, name='profile_edit'),
+    # path('profile/edit/', views.profile_edit, name='profile_edit'),
 
-    # Contractor path
-    # path('contractor/', include('Contractor.urls')),
+
+    # Profile API
+    path('ratings/', include('star_ratings.urls', namespace='ratings')),
+
+    # path('serviceregistration/', views.service_register_request, name='serviceregistration')
+    path('contractor/', include('Contractor.urls')),
     # path('contractor/', include('django.contrib.auth.urls')),
     # path('home/contractor/', include('Contractor.urls')),
     # path('home/contractor/homepage/', views.contractor_homepage, name='Contractor_homepage'),
@@ -32,7 +38,7 @@ urlpatterns = [
     # #path('home/customer/login/', include('Customer.urls', namespace='Customer_login')),
     # path('customer/login', views.customer_login_request, name='Customer_login'),
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 
