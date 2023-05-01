@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import User, AbstractBaseUser, AbstractUser
+from django.db.models import Q, F
+
 
 
 class Tag(models.Model):
@@ -17,8 +19,6 @@ class Service(models.Model):
   description = models.CharField(max_length=200, null=True)
   date_created = models.DateTimeField(auto_now_add=True, null=True)
   tags = models.ManyToManyField(Tag)
-  
-
 
   def __str__(self):
     return self.name
@@ -42,3 +42,10 @@ class OrderStatus(models.Model):
 #Rating System for Contractor
 
 #User Profile
+
+class RequestService(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='customer', default=1)
+    contractor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contractor', default=1)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    date_request = models.DateTimeField(auto_now_add=True)
+    Status = 'Pending'

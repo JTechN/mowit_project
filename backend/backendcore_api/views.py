@@ -27,6 +27,10 @@ from django.views.generic import DetailView
 # Contractor
 from Contractor.models import Service
 
+# Customer
+from Contractor.forms import RequestServiceForm
+from Contractor.models import RequestService
+
 from .forms import NewUserForm, UserUpdateForm, ProfileUpdateForm, UserInfoUpdateForm
 
 # Create your views here.
@@ -35,7 +39,10 @@ from .forms import NewUserForm, UserUpdateForm, ProfileUpdateForm, UserInfoUpdat
 def homepage(request):
 	user = request.user.id
 	all_service = Service.objects.filter(account_id = user)
-	return render(request, 'homepage.html', {'services': all_service})
+	Contractors = Service.objects.select_related('account').all()
+	customer_request = RequestService.objects.filter(customer = user)
+	contractor_request = RequestService.objects.filter(contractor = user)
+	return render(request, 'homepage.html', {'services': all_service, 'Contractors': Contractors, 'customer_request': customer_request, 'contractor_request': contractor_request})
 
 # Registration Form
 def register_request(request):
@@ -108,11 +115,22 @@ def profile_request(request):
   return render(request, 'profile.html', context)
 	# return render(request=request, template_name='profile.html')
 
-#Show data in contractor dashboard
-def show_service(request):
-  all_service = Service.objects.all()
-  print(all_service)
-  return render(request, 'contractor_dashboard.html', {'services':all_service})
+#Add request in customer dashboard
+def request_service(request):
+    form = RequestServiceForm(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            return redirect("backendcore_api:homepage")
+    return render(request, 'customer_request_form.html', {'form':form})
+
+def delete_service_request(request, customer_id):
+    request_service = get_object_or_404(RequestService, id=customer_id)
+    request_service.delete()
+    return redirect('backendcore_api:homepage')
+
+
+
 
 #Edit Profile
 # def profile_edit(request, user_id):

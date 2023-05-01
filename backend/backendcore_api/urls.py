@@ -31,7 +31,8 @@ urlpatterns = [
     # path('contractor/login', views.contractor_login_request, name='Contractor_login'),
 
     # Customer path
-    # path('customer/', include('Customer.urls')),
+    path('request_service/', views.request_service, name = 'request_service'),
+    path('request_service/<int:customer_id>/delete/', views.delete_service_request, name='delete_service_request'),
     # path('customer/', include('django.contrib.auth.urls')),
     # path('home/customer/', include('Customer.urls')),
     # path('home/customer/homepage/', views.customer_homepage, name='Customer_homepage'),
