@@ -40,9 +40,10 @@ def homepage(request):
 	user = request.user.id
 	all_service = Service.objects.filter(account_id = user)
 	Contractors = Service.objects.select_related('account').all()
+	Customers = Group.objects.get(name='Customer').user_set.all()
 	customer_request = RequestService.objects.filter(customer = user)
 	contractor_request = RequestService.objects.filter(contractor = user)
-	return render(request, 'homepage.html', {'services': all_service, 'Contractors': Contractors, 'customer_request': customer_request, 'contractor_request': contractor_request})
+	return render(request, 'homepage.html', {'services': all_service, 'Contractors': Contractors, 'Customers': Customers, 'customer_request': customer_request, 'contractor_request': contractor_request})
 
 # Registration Form
 def register_request(request):
@@ -104,7 +105,7 @@ def profile_request(request):
   else:
     updateform = UserUpdateForm(instance=request.user)
     profileform = ProfileUpdateForm(instance=request.user.profile)
-    infoupdateform = UserInfoUpdateForm(instance=request.user)
+    infoupdateform = UserInfoUpdateForm(instance=request.user.userinfo)
 
   context = {
 		'updateform': updateform,

@@ -73,7 +73,6 @@
           <td>{{customer.contractor}}</td>
           <td>{{customer.service}}</td>
           <td>{{customer.date_request}}</td>
-          {{ customer.id }}
           <td>Pending</td>
           <td>
             <form action="{% url 'backendcore_api:delete_service_request' customer.id %}" method="POST">

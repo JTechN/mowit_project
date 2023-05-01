@@ -46,7 +46,7 @@ class UserInfoUpdateForm(forms.ModelForm):
   address = forms.CharField(max_length=100, required=False)
   zipcode = forms.CharField(max_length=5, required=False)
   class Meta:
-        model = User
+        model = UserInfo
         fields = ['phone_number', 'address', 'zipcode']
 
 
