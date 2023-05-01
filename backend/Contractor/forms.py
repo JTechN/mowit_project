@@ -1,6 +1,7 @@
 from django.forms import ModelForm
-from Contractor.models import Service
+from Contractor.models import Service, RequestService
 from django import forms
+
 
 
 # class ServiceForm(ModelForm):
@@ -13,7 +14,7 @@ from django import forms
 
 
 
-# =====Database not showing up=====
+
 class ServiceForm(forms.ModelForm):
 
   class Meta:
@@ -26,4 +27,10 @@ class ServiceForm(forms.ModelForm):
         if commit:
             service.save()
         return service
+  
+class RequestServiceForm(forms.ModelForm):
+    class Meta:
+        model = RequestService
+        fields = ('customer', 'contractor', 'service')
+        
 

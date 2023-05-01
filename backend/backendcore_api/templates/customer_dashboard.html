@@ -11,6 +11,7 @@
         <tr>
           <th>Service</th>
           <th>Price</th>
+          <th>Contractor<th>
         </tr>
         </thead>
         </table>
@@ -22,7 +23,7 @@
     <h5>Contractors:</h5>
     <hr>
     <div class ="card card-body">
-      <a class="btn btn-primary btn-sm btn-block" href="">List of Contractors</a>
+      <h3>List of Contractors</h3>
 
       <table class="table table-sm">
         <thead>
@@ -32,6 +33,17 @@
           <th>Prices</th>
         </tr>
       </thead>
+      <tbody>
+        
+          {% for contractor in Contractors %}
+          <tr>
+            <td>{{contractor.account.username}}</td>
+            <td>{{contractor.name}}</td>
+            <td>{{contractor.price}}</td>
+          </tr>
+          {% endfor %}
+        
+      </tbody>
       </table>
 
     </div>
@@ -42,18 +54,37 @@
   <h5>Request Services:</h5>
   <hr>
   <div class ="card card-body">
-    <a class="btn btn-primary btn-sm btn-block" href="">Status</a>
+    <a class="btn btn-primary btn-sm btn-block" href="/request_service/">Request</a>
 
     <table class="table table-lg">
       <thead>
       <tr>
         <th>Contractor</th>
+        <th>Service</th>
         <th>Date Request</th>
         <th>Status</th>
-        <th>Update</th>
-        <th>Remove</th>
+        <th>Cancel</th>
       </tr>
       </thead>
+      <tbody>
+        
+        {% for customer in customer_request %}
+        <tr>
+          <td>{{customer.contractor}}</td>
+          <td>{{customer.service}}</td>
+          <td>{{customer.date_request}}</td>
+          {{ customer.id }}
+          <td>Pending</td>
+          <td>
+            <form action="{% url 'backendcore_api:delete_service_request' customer.id %}" method="POST">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger">Cancel</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      
+    </tbody>
     </table>
 
   </div>
