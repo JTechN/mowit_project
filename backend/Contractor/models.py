@@ -44,8 +44,14 @@ class OrderStatus(models.Model):
 #User Profile
 
 class RequestService(models.Model):
+    STATUS_CHOICES = (
+    ('Pending', 'Pending'),
+    ('Out for Service', 'Out for Service'),
+    ('Completed', 'Completed'),
+  )
+    
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='customer', default=1)
     contractor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contractor', default=1)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     date_request = models.DateTimeField(auto_now_add=True)
-    Status = 'Pending'
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')

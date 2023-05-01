@@ -24,6 +24,7 @@ urlpatterns = [
 
     # path('serviceregistration/', views.service_register_request, name='serviceregistration')
     path('contractor/', include('Contractor.urls')),
+    path('contractor/<int:contractor_id>/', views.update_request_status, name="update_request_status"),
     # path('contractor/', include('django.contrib.auth.urls')),
     # path('home/contractor/', include('Contractor.urls')),
     # path('home/contractor/homepage/', views.contractor_homepage, name='Contractor_homepage'),

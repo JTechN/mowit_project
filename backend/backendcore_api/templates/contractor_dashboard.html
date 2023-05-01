@@ -18,7 +18,7 @@
             {{item.name}} 
           </td>
           <td>
-          {{item.price}}
+          ${{item.price}}
           </td>
         </tr>
         {% endfor %}
@@ -52,7 +52,6 @@
   <h5>Jobs:</h5>
   <hr>
   <div class ="card card-body">
-    <a class="btn btn-primary btn-sm btn-block" href="">TODO</a>
     <table class="table table-lg">
       <thead>
       <tr>
@@ -68,8 +67,7 @@
               <td>{{contractor.customer}}</td>
               <td>{{contractor.service}}</td>
               <td>{{contractor.date_request}}</td>
-              <td>Pending</td>
-
+              <td><button type="button" onclick="window.location.href='{% url 'backendcore_api:update_request_status' contractor.id %}'">{{contractor.status}}</button></td>
             </tr>
           {% endfor %}
           </tbody>

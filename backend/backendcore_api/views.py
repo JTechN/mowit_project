@@ -28,7 +28,7 @@ from django.views.generic import DetailView
 from Contractor.models import Service
 
 # Customer
-from Contractor.forms import RequestServiceForm
+from Contractor.forms import RequestServiceForm, RequestServiceUpdateForm
 from Contractor.models import RequestService
 
 from .forms import NewUserForm, UserUpdateForm, ProfileUpdateForm, UserInfoUpdateForm
@@ -37,13 +37,34 @@ from .forms import NewUserForm, UserUpdateForm, ProfileUpdateForm, UserInfoUpdat
 
 # Homepage
 def homepage(request):
-	user = request.user.id
-	all_service = Service.objects.filter(account_id = user)
-	Contractors = Service.objects.select_related('account').all()
-	Customers = Group.objects.get(name='Customer').user_set.all()
-	customer_request = RequestService.objects.filter(customer = user)
-	contractor_request = RequestService.objects.filter(contractor = user)
-	return render(request, 'homepage.html', {'services': all_service, 'Contractors': Contractors, 'Customers': Customers, 'customer_request': customer_request, 'contractor_request': contractor_request})
+    user = request.user.id
+    
+    all_service = Service.objects.filter(account_id = user)
+    Contractors = Service.objects.select_related('account').all()
+    Customers = Group.objects.get(name='Customer').user_set.all()
+    customer_request = RequestService.objects.filter(customer = user)
+    contractor_request = RequestService.objects.filter(contractor = user)
+     
+    
+		
+    return render(request, 'homepage.html', {'services': all_service, 'Contractors': Contractors, 'Customers': Customers, 'customer_request': customer_request, 'contractor_request': contractor_request})
+
+def update_request_status(request, contractor_id):
+    request_service = get_object_or_404(RequestService, id=contractor_id)
+    form = RequestServiceUpdateForm(instance=request_service)
+    print(request.method)
+    print(form.is_valid())
+    print(form.errors)
+    print(form.errors.as_data())
+    
+    if request.method == 'POST':
+        form = RequestServiceUpdateForm(request.POST, instance=request_service)
+        if form.is_valid():
+            form.status = form.cleaned_data['status']
+            form.save()
+            return redirect('backendcore_api:homepage')
+            
+    return render(request, 'update_request_status.html', {'form': form, 'request_service': request_service})
 
 # Registration Form
 def register_request(request):

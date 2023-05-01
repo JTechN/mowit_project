@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+    <form method="POST">
+        <h1 style = "margin-bottom: 50px;">Order Status for {{ request_service.customer }}</h1>
+        {% csrf_token %}
+        <div style = "display: none;">
+            {{ form.customer }}
+            {{ form.contractor }}
+            {{ form.service }}
+        </div>
+        {{form.status }}
+        <button type="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}

@@ -32,5 +32,27 @@ class RequestServiceForm(forms.ModelForm):
     class Meta:
         model = RequestService
         fields = ('customer', 'contractor', 'service')
-        
+
+
+class RequestServiceUpdateForm(forms.ModelForm):
+    STATUS_CHOICES = (
+    ('Pending', 'Pending'),
+    ('Out for Service', 'Out for Service'),
+    ('Completed', 'Completed'),
+    )
+
+    status = forms.ChoiceField(choices=STATUS_CHOICES, required=True)
+
+    class Meta:
+        model = RequestService
+        fields = ('customer', 'contractor', 'service', 'status')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Set the initial values of the fields based on the values in the database
+        instance = kwargs.get('instance')
+        if instance:
+            self.initial['customer'] = instance.customer
+            self.initial['contractor'] = instance.contractor
+            self.initial['service'] = instance.service
 
