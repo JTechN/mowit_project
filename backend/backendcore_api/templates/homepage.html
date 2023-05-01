@@ -7,7 +7,7 @@
 <br>
 <h1 class="text-center">Welcome to MowIT</h1>
 {% if user.is_authenticated %}
-<p style="text-align:center">Hello, {{request.user.username}}</p>
+<p style="text-align:center">Hello, {{request.user.first_name}}</p>
 
 <!-- If the user is a contractor, this will show the contractor side of the homepage -->
 {% if request.user|in_group:"Contractor" %}
