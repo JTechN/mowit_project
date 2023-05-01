@@ -55,12 +55,22 @@
       <thead>
       <tr>
         <th>Customer</th>
+        <th>Service</th>
         <th>Date Request</th>
         <th>Status</th>
-        <th>Update</th>
-        <th>Remove</th>
       </tr>
      </thead>
+     <tbody>
+     {% for contractor in contractor_request %}
+            <tr>
+              <td>{{contractor.customer}}</td>
+              <td>{{contractor.service}}</td>
+              <td>{{contractor.date_request}}</td>
+              <td>Pending</td>
+
+            </tr>
+          {% endfor %}
+          </tbody>
     </table>
   </div>
 </div>
