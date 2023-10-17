@@ -11,8 +11,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 import os
-from pathlib import Path
 import environ
+from pathlib import Path
+
 
 from datetime import timedelta
 
@@ -57,7 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'environ',
     # Internal
     'backendcore_api.apps.BackendcoreConfig',
     # 'backendcore_api',
